@@ -27,16 +27,6 @@ If the selected text element does not contain a valid timestamp, no action will 
 
 The new text elements will use the "Code" font style for better readability.
 
-## Time Stamp Diff Logger
+## Word Counter
 
-Log the time difference between the current time and a selected text element containing a timestamp.
-
-If no text element is selected, a new text element with the current timestamp will be created.
-
-If a text element is selected and contains a valid timestamp in the format "YYYY-MM-DD HH:MM:SS",
-a new text element will be created at the same position with the original timestamp,
-the current timestamp, and the duration in minutes between the two timestamps.
-
-If the selected text element does not contain a valid timestamp, no action will be taken.
-
-The new text elements will use the "Code" font style for better readability.
+This script counts the number of words in the selected text elements in Excalidraw. It filters out non-text elements, combines the text, and then splits it into words while removing punctuation. Finally, it displays the word count in a notice.
