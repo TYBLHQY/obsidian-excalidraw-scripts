@@ -1,11 +1,10 @@
 /*
 
 Auto Sentence Numbering for Excalidraw
-This script takes the selected text elements in Excalidraw, splits their content into sentences based on common punctuation marks, and then prefixes each sentence with a circled number (①, ②, etc.) to indicate its order. If a text element contains only one sentence, it will simply be prefixed with "①". The script handles up to 50 sentences per text element, after which it defaults to using regular numbering (e.g., "51."). After processing, the updated text elements are added back to the view, and a notice is displayed indicating how many text elements were processed.
+This script automatically adds circled numbers at the beginning of sentences in selected text elements. It intelligently detects sentence boundaries while avoiding common pitfalls such as abbreviations, decimal numbers, and quoted text.
 
 ```javascript
 */
-
 let selected = ea.getViewSelectedElements().filter(el => el.type === "text");
 
 if (selected.length === 0) {
@@ -13,16 +12,8 @@ if (selected.length === 0) {
     return;
 }
 
-const circledNumbers = [
-    '①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩',
-    '⑪','⑫','⑬','⑭','⑮','⑯','⑰','⑱','⑲','⑳',
-    '㉑','㉒','㉓','㉔','㉕','㉖','㉗','㉘','㉙','㉚',
-    '㉛','㉜','㉝','㉞','㉟','㊱','㊲','㊳','㊴','㊵',
-    '㊶','㊷','㊸','㊹','㊺','㊻','㊼','㊽','㊾','㊿'
-];
-
 function getCircledNumber(n) {
-    return n >= 1 && n <= 50 ? circledNumbers[n - 1] : `${n}.`;
+    return `(${n}) `;
 }
 
 function isAbbreviation(text, index) {
@@ -43,21 +34,40 @@ function isAbbreviation(text, index) {
     );
 }
 
+function isInQuoteContext(text, index) {
+    const before = text.slice(0, index);
+
+    const openQuotes = (before.match(/["“]/g) || []).length;
+    const closeQuotes = (before.match(/["”]/g) || []).length;
+
+    const openParens = (before.match(/\(/g) || []).length;
+    const closeParens = (before.match(/\)/g) || []).length;
+
+    return openQuotes > closeQuotes || openParens > closeParens;
+}
+
+function isDecimal(text, index) {
+    return (/\d\.\d/.test(text.slice(index - 2, index + 3)));
+}
+
 function addRawNumbers(text) {
     let count = 1;
     text = text.trim();
-    let result = `① `;
-    const regex = /([。！？.!?]+(?:["“”"'』」》】）])?)(\s*)/g;
+    let result = getCircledNumber(1);
+    const regex = /([。！？.!?]+[)””'"』」》】）]*)(\s*)/g;
     result += text.replace(regex, (match, punctuation, spaces, offset, fullText) => {
-        if (spaces.includes("\n") || isAbbreviation(fullText, offset)) return match;
+        if (isAbbreviation(fullText, offset) ||
+            isInQuoteContext(fullText, offset) ||
+            isDecimal(fullText, offset))
+            return match;
         count++;
-        return `${punctuation}${spaces}${getCircledNumber(count)} `;
+        return `${punctuation}${spaces}${getCircledNumber(count)}`;
     });
     return result;
 }
 
 function removeTrailingNumber(text) {
-    return text.replace(/\s*[①-㊿]\s*$/, "");
+    return text.replace(/\s*\(\d+\)\s*$/, "");
 }
 
 function addSentenceNumbers(text) {
