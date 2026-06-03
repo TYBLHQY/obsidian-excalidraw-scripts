@@ -30,3 +30,7 @@ The new text elements will use the "Code" font style for better readability.
 ## Word Counter
 
 This script counts the number of words in the selected text elements in Excalidraw. It filters out non-text elements, combines the text, and then splits it into words while removing punctuation. Finally, it displays the word count in a notice.
+
+## Auto Sentence Numbering
+
+This script takes the selected text elements in Excalidraw, splits their content into sentences based on common punctuation marks, and then prefixes each sentence with a circled number (①, ②, etc.) to indicate its order. If a text element contains only one sentence, it will simply be prefixed with "①". The script handles up to 50 sentences per text element, after which it defaults to using regular numbering (e.g., "51."). After processing, the updated text elements are added back to the view, and a notice is displayed indicating how many text elements were processed.
