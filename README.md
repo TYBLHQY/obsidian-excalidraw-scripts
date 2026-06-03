@@ -33,4 +33,4 @@ This script counts the number of words in the selected text elements in Excalidr
 
 ## Auto Sentence Numbering
 
-This script takes the selected text elements in Excalidraw, splits their content into sentences based on common punctuation marks, and then prefixes each sentence with a circled number (①, ②, etc.) to indicate its order. If a text element contains only one sentence, it will simply be prefixed with "①". The script handles up to 50 sentences per text element, after which it defaults to using regular numbering (e.g., "51."). After processing, the updated text elements are added back to the view, and a notice is displayed indicating how many text elements were processed.
+This script automatically adds circled numbers at the beginning of sentences in selected text elements. It intelligently detects sentence boundaries while avoiding common pitfalls such as abbreviations, decimal numbers, and quoted text.
